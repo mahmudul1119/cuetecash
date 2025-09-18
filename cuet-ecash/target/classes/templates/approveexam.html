@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Exam - CUET eCash</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Custom Tailwind CSS configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-purple': {
+                          'DEFAULT': '#9C27B0',
+                          'light': '#E1BEE7',
+                        },
+                        'brand-cyan': {
+                          'DEFAULT': '#00BCD4',
+                          'dark': '#0097A7',
+                          'light': '#B2EBF2',
+                        },
+                        'content-bg': '#F8FAFC', // A light gray, close to the image
+                        'highlight-green': '#D7F5E8',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+        }
+    </style>
+</head>
+<body class="text-gray-800 bg-green-100 ">
+
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-green-200 text-gray-800 shadow-sm sticky top-0 z-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-3">
+                         <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-gray-800 text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                         </div>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-900">CUET eCash</h1>
+                            <p class="text-xs text-gray-500">Officer Dashboard</p>
+                        </div>
+                    </div>
+
+                    <!-- User Info & Logout -->
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                             <div class="text-left">
+                                <p class="font-semibold text-sm text-gray-800">Dr. Rahman Ahmed</p>
+                                <p class="text-xs text-white bg-brand-purple rounded-full px-2 py-0.5">Dept. Officer</p>
+                            </div>
+                        </div>
+                         <button class="text-gray-500 hover:text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                        </button>
+                        <button class="flex items-center space-x-2 text-gray-500 hover:text-gray-800 transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Navigation Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <a href="hallofficerdashboard.html" class="group border-b-2 border-green-500 shadow-2xl rounded-2xl inline-flex items-center py-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                        <span>Overview</span>
+                    </a>
+                    <a href="searchstudent.html" class="group border-b-2 border-green-500 shadow-2xl rounded-2xl inline-flex items-center py-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                        <span>Search Student</span>
+                    </a>
+                    <a href="approveexam.html" class="group border-b-2 border-green-500 shadow-2xl rounded-2xl inline-flex items-center py-4 px-1 font-medium text-sm border-brand-purple text-brand-purple" aria-current="page">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                        <span>Approve Exam</span>
+                    </a>
+                    <a href="noticepage.html" class="group border-b-2 border-green-500 shadow-2xl rounded-2xl inline-flex items-center py-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" /></svg>
+                        <span>Notices</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Approve Students for Exam (Dept. Officer)</h2>
+                    <p class="text-sm text-gray-500">Showing Semester Fee payments pending approval</p>
+                </div>
+
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex items-center space-x-2 text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        <span>Filter by:</span>
+                    </div>
+                    <select class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option>All Batches</option>
+                    </select>
+                    <select class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option>All Semesters</option>
+                    </select>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead class="border-b border-gray-200">
+                            <tr>
+                                <th scope="col" class="py-3 pr-3 text-left text-sm font-semibold text-gray-600">Roll</th>
+                                <th scope="col" class="px-3 py-3 text-left text-sm font-semibold text-gray-600">Name</th>
+                                <th scope="col" class="px-3 py-3 text-left text-sm font-semibold text-gray-600">Paid Amt</th>
+                                <th scope="col" class="px-3 py-3 text-left text-sm font-semibold text-gray-600">Fine</th>
+                                <th scope="col" class="px-3 py-3 text-left text-sm font-semibold text-gray-600">Paid Date</th>
+                                <th scope="col" class="px-3 py-3 text-left text-sm font-semibold text-gray-600">Payment Type</th>
+                                <th scope="col" class="px-3 py-3 text-left text-sm font-semibold text-gray-600">Approval Status</th>
+                                <th scope="col" class="relative py-3 pl-3 text-left text-sm font-semibold text-gray-600">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <tr class="border-b border-gray-200">
+                                <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900">2204027</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">Mahmudul Islam</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">৳8,000</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">৳0</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">2025-07-09</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">Semester Fee</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-orange-600">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Pending Dept.
+                                    </div>
+                                </td>
+                                <td class="relative whitespace-nowrap py-4 pl-3 text-sm font-medium">
+                                    <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Approve Semester</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
