@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Student Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* A custom style for the icon background */
+        .icon-bg {
+            background-color: #2563eb;
+        }
+        /* Import a custom font if needed, like Segoe UI */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex justify-center py-10">
+    <div class="container bg-white p-10 rounded-2xl shadow-xl max-w-3xl w-full text-center">
+        <div class="icon-bg text-white w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-light">
+            👤
+        </div>
+        <h1 class="text-2xl font-bold mb-1">Create Student Account</h1>
+        <p class="text-sm text-gray-500 mb-8">Join CUET eCash System</p>
+
+        <form class="grid grid-cols-6 gap-x-6 gap-y-4 text-left">
+            <div class="col-span-6 md:col-span-3 lg:col-span-3 flex flex-col">
+                <label class="text-sm font-medium mb-1">Full Name</label>
+                <input type="text" placeholder="Enter your full name" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div class="col-span-6 md:col-span-3 lg:col-span-3 flex flex-col">
+                <label class="text-sm font-medium mb-1">Roll Number</label>
+                <input type="text" placeholder="e.g., 2204027" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+
+            <div class="col-span-6 md:col-span-2 lg:col-span-2 flex flex-col">
+                <label class="text-sm font-medium mb-1">Department</label>
+                <select class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none">
+                    <option value="disabled">Select Department</option>
+                    <option value="CSE">CSE</option>
+                    <option value="EEE">EEE</option>
+                    <option value="ME">ME</option>
+                    <option value="CE">CE</option>
+                    <option value="ARCH">ARCH</option>
+                    <option value="URP">URP</option>
+                    <option value="ETE">ETE</option>
+                    <option value="MIE">MIE</option>
+                    <option value="WRE">WRE</option>
+                    <option value="MME">MME</option>
+                    <option value="BME">BME</option>
+                    <option value="PME">PME</option>
+                </select>
+            </div>
+            <div class="col-span-6 md:col-span-2 lg:col-span-2 flex flex-col">
+                <label class="text-sm font-medium mb-1">Batch</label>
+                <input type="text" placeholder="e.g., 22" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div class="col-span-6 md:col-span-2 lg:col-span-2 flex flex-col">
+                <label class="text-sm font-medium mb-1">Current Semester</label>
+                <input type="text" placeholder="e.g., 8th Semester" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+
+            <div class="col-span-6 md:col-span-3 lg:col-span-3 flex flex-col">
+                <label class="text-sm font-medium mb-1">Mobile Number</label>
+                <input type="text" placeholder="01XXXXXXXXX" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div class="col-span-6 md:col-span-3 lg:col-span-3 flex flex-col">
+                <label class="text-sm font-medium mb-1">Hall Name</label>
+                <select class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none">
+                    <option value="disabled">Select Hall</option>
+                    <option value="kknih">Kabi Kazi Nazrul Islam Hall</option>
+                    <option value="sthh">Shaheed Tareq Huda Hall</option>
+                    <option value="qk">Dr. Qudrat-E-Khuda Hall</option>
+                    <option value="mh">Muktijoddha Hall</option>
+                    <option value="smsh">Shahid Mohammad Shah Hall</option>
+                    <option value="sbsh">Shaheed Abu Sayed Hall</option>
+                    <option value="skh">Sufia Kamal Hall</option>
+                    <option value="bsnkh">Begum Shamsun Nahar Khan Hall</option>
+                </select>
+            </div>
+
+            <div class="col-span-6 flex flex-col">
+                <label class="text-sm font-medium mb-1">Email Address</label>
+                <input type="email" placeholder="your.email@cuet.edu" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+
+            <div class="col-span-6 flex flex-col">
+                <label class="text-sm font-medium mb-1">Address</label>
+                <textarea placeholder="Enter your full address" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none resize-y min-h-[60px]"></textarea>
+            </div>
+
+            <div class="col-span-6 md:col-span-3 lg:col-span-3 flex flex-col">
+                <label class="text-sm font-medium mb-1">Password</label>
+                <input type="password" placeholder="Create a password" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+            <div class="col-span-6 md:col-span-3 lg:col-span-3 flex flex-col">
+                <label class="text-sm font-medium mb-1">Confirm Password</label>
+                <input type="password" placeholder="Confirm your password" class="p-3 border border-gray-300 rounded-lg text-sm shadow-md focus:border-blue-600 focus:outline-none" />
+            </div>
+
+            <div class="col-span-6 flex flex-col md:flex-row gap-4 mt-4 justify-between">
+                <button type="submit" class="flex-1 py-3 px-6 bg-blue-600 text-white rounded-lg font-medium text-base hover:bg-blue-700 transition-colors duration-200">
+                    Create Account
+                </button>
+                <button type="button" class="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg font-medium text-base hover:bg-gray-300 transition-colors duration-200">
+                    <a href="loginpage.html" class="no-underline text-inherit">Back to Login</a>
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
