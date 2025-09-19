@@ -52,10 +52,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string, role: UserRole): Promise<boolean> => {
     try {
+      // Map frontend roles to backend roles
+      const roleMapping: Record<UserRole, string> = {
+        'Student': 'STUDENT',
+        'Hall Officer': 'HALL_OFFICER', 
+        'Dept. Officer': 'OFFICER',
+        'Admin': 'ADMIN'
+      };
+      
+      const backendRole = roleMapping[role];
+      
       const res = await fetch('http://localhost:5454/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role })
+        body: JSON.stringify({ email, password, role: backendRole })
       });
       if (!res.ok) return false;
       let data: any;

@@ -1,55 +1,67 @@
-@RestController
-@CrossOrigin(origins = "*")
-@RequestMapping("/api/auth")
-public class AuthController {
-    
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-            if (user != null && user.getRole().equals("Admin")) {
-                return ResponseEntity.ok(new LoginResponse(true, user.getRole(), "/admindashboard.html"));
-            }
-            return ResponseEntity.status(401).body("Invalid credentials");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Login failed");
-        }
-    }
-}
+-- Initial data for CUET E-Cash System
+-- This file contains sample data for testing and initial setup
 
-async function handleLogin(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+USE cuet_ecash;
 
-    try {
-        const response = await fetch('http://localhost:8080/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
+-- Insert initial users
+INSERT INTO user_table (email, password, role) VALUES 
+('admin@cuet.ac.bd', '$2a$10$eImiTXuWiQKvCUL7SfsL2OKl6w8XG0pAWZLXD/HGnXH5RfJR6v4Fu', 'ADMIN'),
+('hallofficer@cuet.ac.bd', '$2a$10$eImiTXuWiQKvCUL7SfsL2OKl6w8XG0pAWZLXD/HGnXH5RfJR6v4Fu', 'HALL_OFFICER'),
+('officer@cuet.ac.bd', '$2a$10$eImiTXuWiQKvCUL7SfsL2OKl6w8XG0pAWZLXD/HGnXH5RfJR6v4Fu', 'OFFICER'),
+('student1@student.cuet.ac.bd', '$2a$10$eImiTXuWiQKvCUL7SfsL2OKl6w8XG0pAWZLXD/HGnXH5RfJR6v4Fu', 'STUDENT'),
+('student2@student.cuet.ac.bd', '$2a$10$eImiTXuWiQKvCUL7SfsL2OKl6w8XG0pAWZLXD/HGnXH5RfJR6v4Fu', 'STUDENT');
 
-        const data = await response.json();
-        
-        if (response.ok && data.role === 'Admin') {
-            localStorage.setItem('userRole', 'Admin');
-            window.location.href = 'admindashboard.html';
-        } else {
-            alert('Invalid credentials or not authorized');
-        }
-    } catch (error) {
-        console.error('Login failed:', error);
-        alert('Login failed. Please try again.');
-    }
-}
+-- Insert officers (must be after users)
+INSERT INTO officer (full_name, designation, department, added_by_officer_id, user_id) VALUES 
+('Dr. Md. Rezaul Karim', 'Registrar', 'Administration', NULL, 1),
+('Md. Abdul Rahman', 'Hall Provost', 'CSE', NULL, 2),
+('Prof. Shahida Begum', 'Assistant Registrar', 'EEE', 1, 3);
 
-spring.mvc.static-path-pattern=/**
-spring.web.resources.static-locations=classpath:/static/
-spring.security.csrf.enabled=false
+-- Insert halls
+INSERT INTO hall (hall_name, capacity, officer_id) VALUES 
+('Bangabandhu Sheikh Mujibur Rahman Hall', 300, 2),
+('Shaheed Abdur Rob Hall', 250, 2),
+('Pritilata Hall', 200, 2),
+('Kazi Nazrul Islam Hall', 280, 2),
+('Shah Amanat Hall', 320, 2);
 
-USE ecash_db;
-SELECT * FROM Officers;
+-- Insert students
+INSERT INTO student (full_name, department, batch, address, current_semester, mobile_no, roll_no, hall_id, user_id) VALUES 
+('Mohammad Hassan', 'CSE', 2020, 'Chittagong, Bangladesh', 7, '01712345678', '2003001', 1, 4),
+('Fatema Khatun', 'EEE', 2021, 'Dhaka, Bangladesh', 5, '01812345679', '2103045', 3, 5);
+
+-- Insert sample notices
+INSERT INTO notice (notice_type, title, content, officer_id) VALUES 
+('GENERAL', 'Semester Fee Payment Notice', 'All students are requested to pay their semester fees before the deadline. Late payment will incur additional charges.', 1),
+('HALL', 'Hall Fee Due', 'Hostel residents must clear their hall fees by end of this month.', 2),
+('EXAM', 'Exam Form Submission', 'Students who have cleared all dues can submit their exam forms online.', 3);
+
+-- Insert semester fees
+INSERT INTO semester_fee (semester_id, batch_no, department, semester_fee, deadline, late_fine, officer_id) VALUES 
+(7, 2020, 'CSE', 8500.00, '2024-01-31', 500.00, 1),
+(5, 2021, 'EEE', 8500.00, '2024-01-31', 500.00, 1),
+(6, 2021, 'CSE', 8500.00, '2024-01-31', 500.00, 1),
+(8, 2020, 'EEE', 8500.00, '2024-01-31', 500.00, 1);
+
+-- Insert hall fees
+INSERT INTO hall_fee (semester_id, batch_no, hall_id, h_fee, deadline, late_fine) VALUES 
+(7, 2020, 1, 3000.00, '2024-01-31', 200.00),
+(5, 2021, 3, 3000.00, '2024-01-31', 200.00),
+(6, 2021, 1, 3000.00, '2024-01-31', 200.00),
+(8, 2020, 1, 3000.00, '2024-01-31', 200.00);
+
+-- Insert sample payments
+INSERT INTO payment (transaction_id, payment_method, amount, date, receipt_url, student_id, semester_fee_id, hall_fee_id) VALUES 
+('TXN001234567890', 'bKash', 8500.00, '2024-01-15', 'https://example.com/receipts/txn001234567890.pdf', 1, 1, NULL),
+('TXN001234567891', 'Nagad', 3000.00, '2024-01-16', 'https://example.com/receipts/txn001234567891.pdf', 1, NULL, 1),
+('TXN001234567892', 'Bank Transfer', 8500.00, '2024-01-17', 'https://example.com/receipts/txn001234567892.pdf', 2, 2, NULL);
+
+-- Insert exam approvals
+INSERT INTO exam_approval (request_date, approval_date, status, approval_type, officer_id, payment_id, comments) VALUES 
+('2024-01-18', '2024-01-19', 'APPROVED', 'SEMESTER_EXAM', 1, 1, 'Fee payment verified and approved'),
+('2024-01-20', NULL, 'PENDING', 'SEMESTER_EXAM', 1, 3, 'Under review by academic office');
+
+-- Note: Default password for all test accounts is "password123"
+-- Admin credentials: admin@cuet.ac.bd / password123
+-- Student credentials: student1@student.cuet.ac.bd / password123
 

@@ -41,7 +41,7 @@ public class SecurityConfiguration {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/", "/h2-console/**", "/api/auth/**").permitAll()
+                .requestMatchers("/", "/h2-console/**", "/api/auth/**", "/api/test/**").permitAll()
                 .anyRequest().authenticated()
             );
 

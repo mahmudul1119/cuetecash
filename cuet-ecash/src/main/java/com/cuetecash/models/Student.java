@@ -9,6 +9,7 @@ import lombok.Data;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "student_id")
     private Long studentID;
     @Column(name = "full_name")
     private String fullName;
