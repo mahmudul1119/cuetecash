@@ -1,11 +1,9 @@
 package com.cuetecash.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "officer")
-@Data
 public class Officer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +19,54 @@ public class Officer {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    // Getters
+    public Long getOfficerID() {
+        return officerID;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public Officer getAddedByOfficer() {
+        return addedByOfficer;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    // Setters
+    public void setOfficerID(Long officerID) {
+        this.officerID = officerID;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public void setAddedByOfficer(Officer addedByOfficer) {
+        this.addedByOfficer = addedByOfficer;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

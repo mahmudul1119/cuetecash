@@ -16,7 +16,9 @@ INSERT INTO user_table (email, password, role) VALUES
 ('mahmudul@cuet.edu', '123123', 'STUDENT'),
 ('hall.officer@cuet.edu', '123123', 'HALL_OFFICER'),
 ('dept.officer@cuet.edu', '123123', 'OFFICER'),
-('admin@cuet.edu', '123123', 'ADMIN');
+('admin@cuet.edu', '123123', 'ADMIN'),
+-- Additional test user
+('ahmedabrarzayad@gmail.com', '123123', 'ADMIN');
 
 -- Insert officers (must be after users)
 INSERT INTO officer (full_name, designation, department, added_by_officer_id, user_id) VALUES 
@@ -25,7 +27,8 @@ INSERT INTO officer (full_name, designation, department, added_by_officer_id, us
 ('Prof. Shahida Begum', 'Assistant Registrar', 'EEE', 1, 3),
 ('Hall Officer', 'Hall Officer', 'Hall Management', NULL, 7),
 ('Department Officer', 'Department Officer', 'Academic', NULL, 8),
-('System Admin', 'System Administrator', 'IT', NULL, 9);
+('System Admin', 'System Administrator', 'IT', NULL, 9),
+('Ahmed Abrar Zayad', 'System Administrator', 'IT', NULL, 10);
 
 -- Insert halls (each hall needs a unique officer_id due to unique constraint)
 INSERT INTO hall (hall_name, capacity, officer_id) VALUES 
