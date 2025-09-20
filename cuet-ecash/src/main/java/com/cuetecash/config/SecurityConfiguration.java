@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -41,7 +41,7 @@ public class SecurityConfiguration {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/", "/h2-console/**", "/api/auth/**", "/api/test/**").permitAll()
+                .requestMatchers("/", "/h2-console/**", "/api/auth/**", "/api/test/**", "/test-login", "/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             );
 
@@ -52,8 +52,10 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    @SuppressWarnings("deprecation") // Intentionally using plain text passwords for development
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        // Use NoOpPasswordEncoder for plain text passwords (NO ENCRYPTION)
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean

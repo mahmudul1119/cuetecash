@@ -44,4 +44,18 @@ public class TestController {
     public boolean verifyPassword(@RequestParam String password, @RequestParam String hash) {
         return passwordEncoder.matches(password, hash);
     }
+    
+    @GetMapping("/api/test/login-check")
+    public String testLoginCredentials(@RequestParam String email, @RequestParam String password) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return "❌ User not found with email: " + email;
+        }
+        
+        boolean passwordMatches = passwordEncoder.matches(password, user.getPassword());
+        return "User: " + user.getEmail() + 
+               "\nRole: " + user.getRole() + 
+               "\nPassword matches: " + passwordMatches +
+               "\nStored hash: " + user.getPassword().substring(0, 20) + "...";
+    }
 } 

@@ -15,11 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,15 +33,13 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final StudentRepository studentRepository;
     private final HallRepository hallRepository;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserRepository userRepository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, HallRepository hallRepository) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserRepository userRepository, StudentRepository studentRepository, HallRepository hallRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.studentRepository = studentRepository;
         this.hallRepository = hallRepository;
     }
@@ -64,7 +62,7 @@ public class AuthController {
         }
         User user = new User();
         user.setEmail(registrationDto.getEmail());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        user.setPassword(registrationDto.getPassword()); // Plain text password
         user.setRole("STUDENT");
         user = userRepository.save(user);
 
@@ -100,20 +98,41 @@ public class AuthController {
     @PostMapping("/api/auth/login")
     @ResponseBody
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        System.out.println("🔐 LOGIN ATTEMPT:");
+        System.out.println("   Email: " + loginDTO.getEmail());
+        System.out.println("   Password: " + loginDTO.getPassword());
+        System.out.println("   Role: " + loginDTO.getRole());
+        
         try {
-            Authentication authentication = authenticationManager.authenticate(
+            // Check if user exists first
+            User user = userRepository.findByEmail(loginDTO.getEmail());
+            if (user == null) {
+                System.out.println("❌ User not found in database");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+            }
+            System.out.println("✅ User found: " + user.getEmail() + " with role: " + user.getRole());
+            
+            authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
             );
+            System.out.println("✅ Authentication successful");
+            
             Map<String, Object> extra = new HashMap<>();
-            extra.put("role", loginDTO.getRole());
+            extra.put("role", user.getRole()); // Use actual user role from database
             String token = jwtUtils.generateToken(loginDTO.getEmail(), extra);
             Map<String, Object> body = new HashMap<>();
             body.put("token", token);
             body.put("email", loginDTO.getEmail());
-            body.put("role", loginDTO.getRole());
+            body.put("role", user.getRole()); // Use actual user role from database
+            System.out.println("✅ Login successful, token generated");
             return ResponseEntity.ok(body);
         } catch (BadCredentialsException ex) {
+            System.out.println("❌ Bad credentials: " + ex.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        } catch (Exception ex) {
+            System.out.println("❌ Unexpected error: " + ex.getMessage());
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Login error: " + ex.getMessage());
         }
     }
 }

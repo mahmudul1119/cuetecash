@@ -26,27 +26,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const loadUserData = async (userData: User) => {
-    try {
-      const res = await fetch(`http://localhost:5454/api/student/profile?email=${encodeURIComponent(userData.email)}`);
-      if (res.ok) {
-        const profile = await res.json();
-        setStudentData({
-          id: String(profile.studentID ?? ''),
-          userId: String(profile.user?.userID ?? ''),
-          fullName: profile.fullName ?? '',
-          rollNumber: profile.rollNo ?? '',
-          department: profile.department ?? '',
-          batch: String(profile.batch ?? ''),
-          currentSemester: String(profile.currentSemester ?? ''),
-          mobileNo: profile.mobileNO ?? '',
-          address: profile.address ?? '',
-          hallName: profile.hall?.hallName
-        });
-      } else {
+    // Load student data if user is a student
+    if (userData.role === 'Student') {
+      try {
+        const res = await fetch(`http://localhost:5454/api/student/profile?email=${encodeURIComponent(userData.email)}`);
+        if (res.ok) {
+          const profile = await res.json();
+          setStudentData({
+            id: String(profile.studentID ?? ''),
+            userId: String(profile.user?.userID ?? ''),
+            fullName: profile.fullName ?? '',
+            rollNumber: profile.rollNo ?? '',
+            department: profile.department ?? '',
+            batch: String(profile.batch ?? ''),
+            currentSemester: String(profile.currentSemester ?? ''),
+            mobileNo: profile.mobileNO ?? '',
+            address: profile.address ?? '',
+            hallName: profile.hall?.hallName
+          });
+        } else {
+          setStudentData(null);
+        }
+      } catch {
         setStudentData(null);
       }
-    } catch {
-      setStudentData(null);
+    }
+    
+    // Load officer data if user is an officer, hall officer, or admin
+    if (userData.role === 'Admin' || userData.role === 'Hall Officer' || userData.role === 'Dept. Officer') {
+      try {
+        const res = await fetch(`http://localhost:5454/api/officer/profile?email=${encodeURIComponent(userData.email)}`);
+        if (res.ok) {
+          const profile = await res.json();
+          setOfficerData({
+            id: String(profile.officerID ?? ''),
+            userId: String(profile.user?.userID ?? ''),
+            fullName: profile.fullName ?? '',
+            designation: profile.designation ?? '',
+            department: profile.department ?? ''
+          });
+        } else {
+          // If officer API doesn't exist or fails, create mock data for admin
+          setOfficerData({
+            id: '1',
+            userId: '1',
+            fullName: userData.email.split('@')[0], // Use email prefix as name
+            designation: userData.role === 'Admin' ? 'System Administrator' : userData.role,
+            department: userData.role === 'Admin' ? 'Administration' : 'Department'
+          });
+        }
+      } catch {
+        // Fallback: create mock officer data for admin users
+        setOfficerData({
+          id: '1',
+          userId: '1',
+          fullName: userData.email.split('@')[0], // Use email prefix as name
+          designation: userData.role === 'Admin' ? 'System Administrator' : userData.role,
+          department: userData.role === 'Admin' ? 'Administration' : 'Department'
+        });
+      }
     }
   };
 
@@ -62,12 +100,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const backendRole = roleMapping[role];
       
+      console.log('🔐 Frontend Login Attempt:', { email, password, role, backendRole });
+      
       const res = await fetch('http://localhost:5454/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, role: backendRole })
       });
-      if (!res.ok) return false;
+      
+      console.log('📡 Response Status:', res.status, res.ok);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ Login failed:', errorText);
+        return false;
+      }
       let data: any;
       const ct = res.headers.get('content-type') || '';
       if (ct.includes('application/json')) {
@@ -76,6 +123,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const text = await res.text();
         try { data = JSON.parse(text); } catch { data = {}; }
       }
+      
+      console.log('✅ Login Response Data:', data);
+      
       const token: string | undefined = data.token;
       const authedUser: User = { id: data.email || email, email: data.email || email, password: '', role };
       if (token) {
@@ -83,9 +133,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       localStorage.setItem('currentUser', JSON.stringify(authedUser));
       setUser(authedUser);
-      loadUserData(authedUser);
+      await loadUserData(authedUser);
       return true;
-    } catch {
+    } catch (error) {
+      console.error('🚨 Login Exception:', error);
       return false;
     }
   };
@@ -95,6 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setStudentData(null);
     setOfficerData(null);
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
   };
 
   const signup = async (userData: Partial<Student> & { email: string; password: string }): Promise<boolean> => {

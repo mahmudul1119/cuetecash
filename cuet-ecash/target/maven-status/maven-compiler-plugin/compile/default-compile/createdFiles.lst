@@ -25,6 +25,7 @@ com\cuetecash\controllers\StudentSearchController.class
 com\cuetecash\dto\ForgetPasswordDTO.class
 com\cuetecash\models\Student.class
 com\cuetecash\controllers\AllControllers.class
+com\cuetecash\controllers\TestController.class
 com\cuetecash\repositories\StudentRepository.class
 com\cuetecash\models\Payment.class
 com\cuetecash\repositories\UserRepository.class
@@ -34,7 +35,9 @@ com\cuetecash\dto\ApproveExamDTO.class
 com\cuetecash\controllers\AdminDashboardController.class
 com\cuetecash\repositories\HallFeeRepository.class
 com\cuetecash\security\JwtUtils.class
+com\cuetecash\models\Payment$PaymentStatus.class
 com\cuetecash\dto\StudentDTO.class
+com\cuetecash\models\ExamApproval$ApprovalStatus.class
 com\cuetecash\repositories\SemesterFeeRepository.class
 com\cuetecash\dto\StudentRegistrationDTO.class
 com\cuetecash\controllers\AuthController.class

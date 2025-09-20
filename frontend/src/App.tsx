@@ -9,8 +9,12 @@ import AdminDashboard from './components/admin/AdminDashboard';
 type AuthPage = 'login' | 'signup' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { user, studentData, officerData } = useAuth();
+  const { user } = useAuth();
   const [currentAuthPage, setCurrentAuthPage] = useState<AuthPage>('login');
+
+  const handleNavigate = (page: string) => {
+    setCurrentAuthPage(page as AuthPage);
+  };
 
   // If user is logged in, show appropriate dashboard
   if (user) {
@@ -30,9 +34,9 @@ const AppContent: React.FC = () => {
   // If user is not logged in, show authentication pages
   switch (currentAuthPage) {
     case 'login':
-      return <LoginPage onNavigate={setCurrentAuthPage} />;
+      return <LoginPage onNavigate={handleNavigate} />;
     case 'signup':
-      return <SignupPage onNavigate={setCurrentAuthPage} />;
+      return <SignupPage onNavigate={handleNavigate} />;
     case 'forgot-password':
       return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
@@ -53,7 +57,7 @@ const AppContent: React.FC = () => {
                 Send Reset Link
               </button>
               <button
-                onClick={() => setCurrentAuthPage('login')}
+                onClick={() => handleNavigate('login')}
                 className="w-full text-gray-600 hover:text-gray-800 font-medium"
               >
                 Back to Login
@@ -63,7 +67,7 @@ const AppContent: React.FC = () => {
         </div>
       );
     default:
-      return <LoginPage onNavigate={setCurrentAuthPage} />;
+      return <LoginPage onNavigate={handleNavigate} />;
   }
 };
 

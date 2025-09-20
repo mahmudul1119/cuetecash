@@ -15,8 +15,24 @@ const AdminDashboard: React.FC = () => {
   const { officerData, user } = useAuth();
   const [activePanel, setActivePanel] = useState<ActivePanel>('overview');
 
-  if (!officerData || !user || user.role !== 'Admin') {
-    return <div>Access Denied</div>;
+  // Check if user is authenticated and has admin role
+  if (!user || user.role !== 'Admin') {
+    return <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
+        <p className="text-gray-600">You need admin privileges to access this page.</p>
+      </div>
+    </div>;
+  }
+
+  // Show loading if officer data is still being fetched
+  if (!officerData) {
+    return <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading admin dashboard...</p>
+      </div>
+    </div>;
   }
 
   const getSystemStats = () => {
