@@ -9,11 +9,22 @@ import java.time.LocalDate;
  */
 @Data
 public class NoticeDTO {
+    private Long id;
     private String title;
     private String content;
-    private LocalDate publishDate;
+    private String noticeType;
+    private LocalDate postedAt;
+    private String postedBy;
 
     // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -30,11 +41,27 @@ public class NoticeDTO {
         this.content = content;
     }
 
-    public LocalDate getPublishDate() {
-        return publishDate;
+    public String getNoticeType() {
+        return noticeType;
     }
 
-    public void setPublishDate(LocalDate publishDate) {
-        this.publishDate = publishDate;
+    public void setNoticeType(String noticeType) {
+        this.noticeType = noticeType;
+    }
+
+    public LocalDate getPostedAt() {
+        return postedAt;
+    }
+
+    public void setPostedAt(LocalDate postedAt) {
+        this.postedAt = postedAt;
+    }
+
+    public String getPostedBy() {
+        return postedBy;
+    }
+
+    public void setPostedBy(String postedBy) {
+        this.postedBy = postedBy;
     }
 }

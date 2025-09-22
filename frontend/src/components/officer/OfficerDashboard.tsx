@@ -4,6 +4,7 @@ import Layout from '../Layout';
 import { Search, CheckCircle, Bell, User, Building, Award } from 'lucide-react';
 import SearchStudent from './SearchStudent';
 import ApproveExam from './ApproveExam';
+import NoticesDisplay from '../shared/NoticesDisplay';
 
 type ActivePanel = 'overview' | 'search' | 'approve' | 'notices';
 
@@ -124,27 +125,7 @@ const OfficerDashboard: React.FC = () => {
     </div>
   );
 
-  const renderNotices = () => (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Officer Notices</h2>
-      
-      <div className="space-y-4">
-        <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg">
-          <div className="flex items-center space-x-2 mb-2">
-            <span className="text-sm font-medium text-blue-600">2025-07-09</span>
-          </div>
-          <p className="text-gray-800">"Final date for semester fee payment is July 10."</p>
-        </div>
-        
-        <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded-r-lg">
-          <div className="flex items-center space-x-2 mb-2">
-            <span className="text-sm font-medium text-green-600">2025-06-28</span>
-          </div>
-          <p className="text-gray-800">"Officer approval required before exam clearance."</p>
-        </div>
-      </div>
-    </div>
-  );
+  const renderNotices = () => <NoticesDisplay title="Officer Notices" userRole={user?.role || "Officer"} limit={5} />;
 
   return (
     <Layout title="Officer Dashboard">

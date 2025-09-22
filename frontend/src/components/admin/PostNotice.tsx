@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Calendar, FileText, AlertCircle, CheckCircle } from 'lucide-react';
-import { mockNotices } from '../../data/mockData';
+import { noticeService } from '../../services/noticeService';
 
 const PostNotice: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -25,20 +25,11 @@ const PostNotice: React.FC = () => {
     setMessage(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Add to mock data
-      const newNotice = {
-        id: `N${Date.now()}`,
-        postedAt: formData.date,
-        noticeType: formData.noticeType,
+      await noticeService.createNotice({
         title: formData.title,
         content: formData.content,
-        postedBy: 'Admin'
-      };
-      
-      mockNotices.unshift(newNotice);
+        noticeType: formData.noticeType
+      });
       
       setMessage({ type: 'success', text: 'Notice posted successfully!' });
       setFormData({
@@ -48,6 +39,7 @@ const PostNotice: React.FC = () => {
         content: ''
       });
     } catch (error) {
+      console.error('Error posting notice:', error);
       setMessage({ type: 'error', text: 'Failed to post notice. Please try again.' });
     }
 
@@ -55,32 +47,30 @@ const PostNotice: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-          <Plus className="w-5 h-5 text-orange-600" />
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="flex items-center space-x-3 mb-8">
+        <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+          <Plus className="w-6 h-6 text-orange-600" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900">Post New Notice</h2>
+        <h1 className="text-2xl font-bold text-gray-900">Post New Notice</h1>
       </div>
 
       {message && (
-        <div className={`mb-6 p-4 rounded-lg border ${
+        <div className={`mb-6 p-4 rounded-lg flex items-center space-x-3 ${
           message.type === 'success' 
-            ? 'bg-green-50 border-green-200' 
-            : 'bg-red-50 border-red-200'
+            ? 'bg-green-50 border border-green-200' 
+            : 'bg-red-50 border border-red-200'
         }`}>
-          <div className="flex items-center space-x-2">
-            {message.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-green-600" />
-            ) : (
-              <AlertCircle className="w-5 h-5 text-red-600" />
-            )}
-            <p className={`font-medium ${
-              message.type === 'success' ? 'text-green-900' : 'text-red-900'
-            }`}>
-              {message.text}
-            </p>
-          </div>
+          {message.type === 'success' ? (
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          ) : (
+            <AlertCircle className="w-5 h-5 text-red-600" />
+          )}
+          <span className={`font-medium ${
+            message.type === 'success' ? 'text-green-800' : 'text-red-800'
+          }`}>
+            {message.text}
+          </span>
         </div>
       )}
 
@@ -115,12 +105,12 @@ const PostNotice: React.FC = () => {
               required
             >
               <option value="">Select Type</option>
-              <option value="Fee">Fee</option>
-              <option value="Exam">Exam</option>
-              <option value="Academic">Academic</option>
-              <option value="Administrative">Administrative</option>
-              <option value="Holiday">Holiday</option>
-              <option value="General">General</option>
+              <option value="GENERAL">General</option>
+              <option value="FEE">Fee</option>
+              <option value="EXAM">Exam</option>
+              <option value="ACADEMIC">Academic</option>
+              <option value="HALL">Hall</option>
+              <option value="URGENT">Urgent</option>
             </select>
           </div>
         </div>

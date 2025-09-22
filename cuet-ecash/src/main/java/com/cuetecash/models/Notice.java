@@ -18,7 +18,27 @@ public class Notice {
     private String content;
     @Column(name = "posted_at")
     private LocalDateTime postedAt;
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     @ManyToOne
     @JoinColumn(name = "officer_id")
     private Officer officer;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        if (isActive == null) {
+            isActive = true;
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

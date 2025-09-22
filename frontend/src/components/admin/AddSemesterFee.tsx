@@ -1,11 +1,24 @@
 import React, { useState } from 'react';
 import { Calendar, Building, DollarSign, AlertCircle, CheckCircle } from 'lucide-react';
-import { departmentOptions } from '../../data/mockData';
+import { feeService } from '../../services/feeService';
+
+const departmentOptions = [
+  'CSE',
+  'EEE',
+  'Civil Engineering',
+  'Mechanical Engineering',
+  'Naval Architecture',
+  'Architecture',
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'Economics'
+];
 
 const AddSemesterFee: React.FC = () => {
   const [formData, setFormData] = useState({
-    batchNo: '',
-    semesterId: '',
+    batchNO: '',
+    semesterID: '',
     department: '',
     semesterFee: '',
     lateFine: '',
@@ -27,22 +40,26 @@ const AddSemesterFee: React.FC = () => {
     setMessage(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, this would make an API call to create the semester fee record
-      console.log('Creating semester fee:', formData);
+      await feeService.createSemesterFee({
+        batchNO: parseInt(formData.batchNO),
+        semesterID: parseInt(formData.semesterID),
+        department: formData.department,
+        semesterFee: parseFloat(formData.semesterFee),
+        lateFine: parseFloat(formData.lateFine),
+        deadline: formData.deadline
+      });
       
       setMessage({ type: 'success', text: 'Semester fee structure created successfully!' });
       setFormData({
-        batchNo: '',
-        semesterId: '',
+        batchNO: '',
+        semesterID: '',
         department: '',
         semesterFee: '',
         lateFine: '',
         deadline: ''
       });
     } catch (error) {
+      console.error('Error creating semester fee:', error);
       setMessage({ type: 'error', text: 'Failed to create semester fee structure. Please try again.' });
     }
 
@@ -50,32 +67,30 @@ const AddSemesterFee: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-          <Calendar className="w-5 h-5 text-blue-600" />
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="flex items-center space-x-3 mb-8">
+        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+          <Calendar className="w-6 h-6 text-blue-600" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900">Add Semester Fee Structure</h2>
+        <h1 className="text-2xl font-bold text-gray-900">Add Semester Fee Structure</h1>
       </div>
 
       {message && (
-        <div className={`mb-6 p-4 rounded-lg border ${
+        <div className={`mb-6 p-4 rounded-lg flex items-center space-x-3 ${
           message.type === 'success' 
-            ? 'bg-green-50 border-green-200' 
-            : 'bg-red-50 border-red-200'
+            ? 'bg-green-50 border border-green-200' 
+            : 'bg-red-50 border border-red-200'
         }`}>
-          <div className="flex items-center space-x-2">
-            {message.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-green-600" />
-            ) : (
-              <AlertCircle className="w-5 h-5 text-red-600" />
-            )}
-            <p className={`font-medium ${
-              message.type === 'success' ? 'text-green-900' : 'text-red-900'
-            }`}>
-              {message.text}
-            </p>
-          </div>
+          {message.type === 'success' ? (
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          ) : (
+            <AlertCircle className="w-5 h-5 text-red-600" />
+          )}
+          <span className={`font-medium ${
+            message.type === 'success' ? 'text-green-800' : 'text-red-800'
+          }`}>
+            {message.text}
+          </span>
         </div>
       )}
 
@@ -86,13 +101,15 @@ const AddSemesterFee: React.FC = () => {
               Batch Number
             </label>
             <select
-              name="batchNo"
-              value={formData.batchNo}
+              name="batchNO"
+              value={formData.batchNO}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="">Select Batch</option>
+              <option value="18">Batch 18</option>
+              <option value="19">Batch 19</option>
               <option value="20">Batch 20</option>
               <option value="21">Batch 21</option>
               <option value="22">Batch 22</option>
@@ -106,16 +123,21 @@ const AddSemesterFee: React.FC = () => {
               Semester
             </label>
             <select
-              name="semesterId"
-              value={formData.semesterId}
+              name="semesterID"
+              value={formData.semesterID}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
               <option value="">Select Semester</option>
-              {Array.from({ length: 8 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>{i + 1}st Semester</option>
-              ))}
+              <option value="1">1st Semester</option>
+              <option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option>
+              <option value="4">4th Semester</option>
+              <option value="5">5th Semester</option>
+              <option value="6">6th Semester</option>
+              <option value="7">7th Semester</option>
+              <option value="8">8th Semester</option>
             </select>
           </div>
         </div>

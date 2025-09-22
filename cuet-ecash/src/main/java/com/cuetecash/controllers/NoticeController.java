@@ -1,15 +1,23 @@
 package com.cuetecash.controllers;
 
 import com.cuetecash.dto.NoticeDTO;
+import com.cuetecash.services.NoticeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:5173")
 public class NoticeController {
+
+    @Autowired
+    private NoticeService noticeService;
 
     // Serves the notice page.
     @GetMapping("/noticepage")
@@ -17,25 +25,90 @@ public class NoticeController {
         return "noticepage.html";
     }
 
-    // Provides mock notice data for the frontend.
+    // Get all active notices
     @GetMapping("/api/notices")
     @ResponseBody
-    public List<NoticeDTO> getNotices() {
-        List<NoticeDTO> notices = new ArrayList<>();
-        
-        // Mock data to simulate notices.
-        NoticeDTO n1 = new NoticeDTO();
-        n1.setTitle("Examination Fee Deadline Extended");
-        n1.setContent("The deadline for submitting the examination fee has been extended to August 30, 2025. All students are requested to complete the payment by the new deadline.");
-        n1.setPublishDate(LocalDate.of(2025, 7, 15));
-        notices.add(n1);
+    public ResponseEntity<List<NoticeDTO>> getNotices() {
+        try {
+            List<NoticeDTO> notices = noticeService.getAllNotices();
+            return ResponseEntity.ok(notices);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-        NoticeDTO n2 = new NoticeDTO();
-        n2.setTitle("Academic Seminar on AI");
-        n2.setContent("A seminar on 'The Future of AI in Engineering' will be held on August 20, 2025, at the university auditorium. All students are invited to attend.");
-        n2.setPublishDate(LocalDate.of(2025, 7, 10));
-        notices.add(n2);
-        
-        return notices;
+    // Get notices by type
+    @GetMapping("/api/notices/type/{noticeType}")
+    @ResponseBody
+    public ResponseEntity<List<NoticeDTO>> getNoticesByType(@PathVariable String noticeType) {
+        try {
+            List<NoticeDTO> notices = noticeService.getNoticesByType(noticeType);
+            return ResponseEntity.ok(notices);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Create a new notice
+    @PostMapping("/api/notices")
+    @ResponseBody
+    public ResponseEntity<NoticeDTO> createNotice(@RequestBody NoticeDTO noticeDTO) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUserEmail = authentication.getName();
+            
+            NoticeDTO createdNotice = noticeService.createNotice(noticeDTO, currentUserEmail);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdNotice);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Update an existing notice
+    @PutMapping("/api/notices/{id}")
+    @ResponseBody
+    public ResponseEntity<NoticeDTO> updateNotice(@PathVariable Long id, @RequestBody NoticeDTO noticeDTO) {
+        try {
+            NoticeDTO updatedNotice = noticeService.updateNotice(id, noticeDTO);
+            if (updatedNotice != null) {
+                return ResponseEntity.ok(updatedNotice);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Delete a notice (soft delete)
+    @DeleteMapping("/api/notices/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteNotice(@PathVariable Long id) {
+        try {
+            boolean deleted = noticeService.deleteNotice(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Get a specific notice by ID
+    @GetMapping("/api/notices/{id}")
+    @ResponseBody
+    public ResponseEntity<NoticeDTO> getNoticeById(@PathVariable Long id) {
+        try {
+            NoticeDTO notice = noticeService.getNoticeById(id);
+            if (notice != null) {
+                return ResponseEntity.ok(notice);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

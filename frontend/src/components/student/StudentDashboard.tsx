@@ -4,6 +4,8 @@ import Layout from '../Layout';
 import { CreditCard, History, Bell, User, MapPin, Phone, Mail, Building, Hash, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import PaymentModal from './PaymentModal';
 import PaymentHistory from './PaymentHistory';
+import NoticesDisplay from '../shared/NoticesDisplay';
+import StudentDues from './StudentDues';
 // Removed mock imports; expects real data from future APIs
 
 type ActivePanel = 'overview' | 'dues' | 'payment' | 'history' | 'notices';
@@ -191,77 +193,9 @@ const StudentDashboard: React.FC = () => {
     </div>
   );
 
-  const renderDues = () => (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Current Dues Summary</h2>
-      
-      <div className="space-y-4 mb-6">
-        <div className="flex justify-between items-center py-3 border-b border-gray-100">
-          <span className="text-gray-600">Semester Fee</span>
-          <span className="font-medium text-gray-900">৳ {dues.semesterFee.toLocaleString()}</span>
-        </div>
-        
-        {s.hallName && (
-          <div className="flex justify-between items-center py-3 border-b border-gray-100">
-            <span className="text-gray-600">Hall Fee</span>
-            <span className="font-medium text-gray-900">৳ {dues.hallFee.toLocaleString()}</span>
-          </div>
-        )}
-        
-        {dues.lateFine > 0 && (
-          <div className="flex justify-between items-center py-3 border-b border-gray-100">
-            <span className="text-red-600">Late Fine</span>
-            <span className="font-medium text-red-600">৳ {dues.lateFine.toLocaleString()}</span>
-          </div>
-        )}
-        
-        <div className="flex justify-between items-center py-3 text-lg font-semibold">
-          <span className="text-gray-900">Total Payable</span>
-          <span className="text-blue-600">৳ {dues.remaining.toLocaleString()}</span>
-        </div>
-      </div>
+  const renderDues = () => <StudentDues />;
 
-      {dues.remaining > 0 && (
-        <button
-          onClick={() => setShowPaymentModal(true)}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
-          Pay Now
-        </button>
-      )}
-
-      {dues.remaining === 0 && (
-        <div className="text-center py-4">
-          <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-2" />
-          <p className="text-green-600 font-medium">All dues cleared!</p>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderNotices = () => (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Student Notices</h2>
-      
-      <div className="space-y-4">
-        <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg">
-          <div className="flex items-center space-x-2 mb-2">
-            <Calendar className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-600">2025-07-09</span>
-          </div>
-          <p className="text-gray-800">"Students of Batch 22, Sem 8 must clear dues by 10th July 2025. Late fine will apply."</p>
-        </div>
-        
-        <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded-r-lg">
-          <div className="flex items-center space-x-2 mb-2">
-            <Calendar className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-medium text-green-600">2025-06-15</span>
-          </div>
-          <p className="text-gray-800">"Exam clearance begins after full payment and hall fee submission."</p>
-        </div>
-      </div>
-    </div>
-  );
+  const renderNotices = () => <NoticesDisplay title="Student Notices" userRole="Student" limit={5} />;
 
   return (
     <Layout title="Student Dashboard">
@@ -296,7 +230,7 @@ const StudentDashboard: React.FC = () => {
         {activePanel === 'notices' && renderNotices()}
 
         {/* Payment Modal */}
-        {showPaymentModal && (
+        {showPaymentModal && studentData && (
           <PaymentModal
             studentData={studentData}
             dues={dues}
