@@ -41,4 +41,77 @@ public class Notice {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    // Explicit getters and setters
+    public Long getNoticeID() {
+        return noticeID;
+    }
+
+    public void setNoticeID(Long noticeID) {
+        this.noticeID = noticeID;
+    }
+
+    public String getNoticeType() {
+        return noticeType;
+    }
+
+    public void setNoticeType(String noticeType) {
+        this.noticeType = noticeType;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getPostedAt() {
+        return postedAt;
+    }
+
+    public void setPostedAt(LocalDateTime postedAt) {
+        this.postedAt = postedAt;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Officer getOfficer() {
+        return officer;
+    }
+
+    public void setOfficer(Officer officer) {
+        this.officer = officer;
+    }
 }

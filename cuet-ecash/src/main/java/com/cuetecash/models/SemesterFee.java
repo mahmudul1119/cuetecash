@@ -57,4 +57,93 @@ public class SemesterFee {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    // Explicit getters and setters
+    public Long getSemesterFeeID() {
+        return semesterFeeID;
+    }
+
+    public void setSemesterFeeID(Long semesterFeeID) {
+        this.semesterFeeID = semesterFeeID;
+    }
+
+    public Integer getSemesterID() {
+        return semesterID;
+    }
+
+    public void setSemesterID(Integer semesterID) {
+        this.semesterID = semesterID;
+    }
+
+    public Integer getBatchNO() {
+        return batchNO;
+    }
+
+    public void setBatchNO(Integer batchNO) {
+        this.batchNO = batchNO;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public BigDecimal getSemesterFee() {
+        return semesterFee;
+    }
+
+    public void setSemesterFee(BigDecimal semesterFee) {
+        this.semesterFee = semesterFee;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public BigDecimal getLateFine() {
+        return lateFine;
+    }
+
+    public void setLateFine(BigDecimal lateFine) {
+        this.lateFine = lateFine;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Officer getOfficer() {
+        return officer;
+    }
+
+    public void setOfficer(Officer officer) {
+        this.officer = officer;
+    }
 }

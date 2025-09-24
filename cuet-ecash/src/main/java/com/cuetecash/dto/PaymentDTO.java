@@ -12,6 +12,7 @@ public class PaymentDTO {
     private double amount;
     private String transactionId;
     private String paymentMethod;
+    private String feeId;
 
     // Getters and Setters
     public String getStudentId() {
@@ -52,5 +53,13 @@ public class PaymentDTO {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getFeeId() {
+        return feeId;
+    }
+
+    public void setFeeId(String feeId) {
+        this.feeId = feeId;
     }
 }

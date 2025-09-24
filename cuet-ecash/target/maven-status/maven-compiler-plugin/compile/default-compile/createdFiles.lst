@@ -18,6 +18,7 @@ com\cuetecash\repositories\NoticeRepository.class
 com\cuetecash\PasswordHasher.class
 com\cuetecash\security\JwtAuthenticationFilter.class
 com\cuetecash\dto\HallFeeDTO.class
+com\cuetecash\services\PaymentService.class
 com\cuetecash\repositories\ExamApprovalRepository.class
 com\cuetecash\dto\PaymentDTO.class
 com\cuetecash\controllers\HallFeeController.class

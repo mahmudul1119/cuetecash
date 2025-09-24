@@ -58,4 +58,93 @@ public class HallFee {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    // Explicit getters and setters
+    public Long getHallFeeID() {
+        return hallFeeID;
+    }
+
+    public void setHallFeeID(Long hallFeeID) {
+        this.hallFeeID = hallFeeID;
+    }
+
+    public Integer getSemesterID() {
+        return semesterID;
+    }
+
+    public void setSemesterID(Integer semesterID) {
+        this.semesterID = semesterID;
+    }
+
+    public Integer getBatchNO() {
+        return batchNO;
+    }
+
+    public void setBatchNO(Integer batchNO) {
+        this.batchNO = batchNO;
+    }
+
+    public Long getHallId() {
+        return hallId;
+    }
+
+    public void setHallId(Long hallId) {
+        this.hallId = hallId;
+    }
+
+    public BigDecimal getHFee() {
+        return hFee;
+    }
+
+    public void setHFee(BigDecimal hFee) {
+        this.hFee = hFee;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public BigDecimal getLateFine() {
+        return lateFine;
+    }
+
+    public void setLateFine(BigDecimal lateFine) {
+        this.lateFine = lateFine;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Officer getOfficer() {
+        return officer;
+    }
+
+    public void setOfficer(Officer officer) {
+        this.officer = officer;
+    }
 }

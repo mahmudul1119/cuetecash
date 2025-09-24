@@ -15,6 +15,7 @@ public class HallFeeDTO {
     private LocalDate deadline;
     private BigDecimal lateFine;
     private Boolean isActive;
+    private String postedBy;
 
     // Getters and Setters
     public Long getId() {
@@ -87,5 +88,13 @@ public class HallFeeDTO {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getPostedBy() {
+        return postedBy;
+    }
+
+    public void setPostedBy(String postedBy) {
+        this.postedBy = postedBy;
     }
 } 

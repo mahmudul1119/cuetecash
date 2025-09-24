@@ -1,13 +1,111 @@
-import React, { useState } from 'react';
-import { CreditCard, Search, Filter, Download, CheckCircle, Clock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CreditCard, Search, Filter, Download, CheckCircle, Clock, Check, X } from 'lucide-react';
 import { mockPayments, mockStudents } from '../../data/mockData';
 import { Payment } from '../../types';
+
+interface PaymentResponse {
+  paymentID: number;
+  transactionID: string;
+  paymentMethod: string;
+  amount: number;
+  date: string;
+  paymentStatus: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
+  student: {
+    studentID: number;
+    user: {
+      name: string;
+      email: string;
+    };
+    rollNumber: string;
+    batch: string;
+    hallName: string;
+  };
+  semesterFee?: {
+    semesterFeeID: number;
+    amount: number;
+    lateFineAmount: number;
+  };
+  hallFee?: {
+    hallFeeID: number;
+    amount: number;
+    lateFineAmount: number;
+  };
+}
 
 const ViewAllPayments: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBatch, setFilterBatch] = useState('');
   const [filterHall, setFilterHall] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [realPayments, setRealPayments] = useState<PaymentResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch pending payments from API
+  const fetchPendingPayments = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5454/api/admin/payments/pending');
+      if (response.ok) {
+        const payments = await response.json();
+        setRealPayments(payments);
+      }
+    } catch (error) {
+      console.error('Error fetching payments:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Approve payment
+  const approvePayment = async (paymentId: number) => {
+    try {
+      const response = await fetch(`http://localhost:5454/api/admin/payments/${paymentId}/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        // Refresh the payments list
+        fetchPendingPayments();
+        alert('Payment approved successfully!');
+      } else {
+        alert('Error approving payment');
+      }
+    } catch (error) {
+      console.error('Error approving payment:', error);
+      alert('Error approving payment');
+    }
+  };
+
+  // Reject payment
+  const rejectPayment = async (paymentId: number) => {
+    try {
+      const response = await fetch(`http://localhost:5454/api/admin/payments/${paymentId}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        // Refresh the payments list
+        fetchPendingPayments();
+        alert('Payment rejected successfully!');
+      } else {
+        alert('Error rejecting payment');
+      }
+    } catch (error) {
+      console.error('Error rejecting payment:', error);
+      alert('Error rejecting payment');
+    }
+  };
+
+  // Load payments on component mount
+  useEffect(() => {
+    fetchPendingPayments();
+  }, []);
 
   const getStudentInfo = (studentId: string) => {
     return mockStudents.find(s => s.id === studentId);
@@ -43,26 +141,46 @@ const ViewAllPayments: React.FC = () => {
   };
 
   const getFilteredPayments = () => {
-    return mockPayments.filter(payment => {
-      const student = getStudentInfo(payment.studentId);
-      if (!student) return false;
+    // Use real payments if available, otherwise fall back to mock data
+    const paymentsToFilter = realPayments.length > 0 ? realPayments : mockPayments;
+    
+    if (realPayments.length > 0) {
+      // Filter real payments
+      return realPayments.filter(payment => {
+        const matchesSearch = !searchTerm || 
+          payment.student.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.transactionID.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesSearch = !searchTerm || 
-        student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        payment.transactionId.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesBatch = !filterBatch || payment.student.batch === filterBatch;
+        const matchesHall = !filterHall || payment.student.hallName === filterHall;
+        const matchesStatus = !filterStatus || payment.paymentStatus.toLowerCase().includes(filterStatus.toLowerCase());
 
-      const matchesBatch = !filterBatch || student.batch === filterBatch;
-      const matchesHall = !filterHall || student.hallName === filterHall;
+        return matchesSearch && matchesBatch && matchesHall && matchesStatus;
+      });
+    } else {
+      // Filter mock payments (fallback)
+      return mockPayments.filter(payment => {
+        const student = getStudentInfo(payment.studentId);
+        if (!student) return false;
 
-      let matchesStatus = true;
-      if (filterStatus) {
-        const status = getPaymentStatus(payment);
-        matchesStatus = status.status.toLowerCase().includes(filterStatus.toLowerCase());
-      }
+        const matchesSearch = !searchTerm || 
+          student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.transactionId.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch && matchesBatch && matchesHall && matchesStatus;
-    });
+        const matchesBatch = !filterBatch || student.batch === filterBatch;
+        const matchesHall = !filterHall || student.hallName === filterHall;
+
+        let matchesStatus = true;
+        if (filterStatus) {
+          const status = getPaymentStatus(payment);
+          matchesStatus = status.status.toLowerCase().includes(filterStatus.toLowerCase());
+        }
+
+        return matchesSearch && matchesBatch && matchesHall && matchesStatus;
+      });
+    }
   };
 
   const filteredPayments = getFilteredPayments();
@@ -154,34 +272,93 @@ const ViewAllPayments: React.FC = () => {
               <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
               <th className="text-left py-3 px-4 font-medium text-gray-700">TxID</th>
               <th className="text-left py-3 px-4 font-medium text-gray-700">Method</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredPayments.map((payment, index) => {
-              const student = getStudentInfo(payment.studentId);
-              const status = getPaymentStatus(payment);
-              const StatusIcon = status.icon;
+              // Check if this is a PaymentResponse (real payment) or Payment (mock)
+              const isRealPayment = 'paymentID' in payment;
+              
+              if (isRealPayment) {
+                // Handle real payment from API
+                const realPayment = payment as PaymentResponse;
+                const status = realPayment.paymentStatus;
+                const paymentType = realPayment.semesterFee ? 'Semester Fee' : 
+                                   realPayment.hallFee ? 'Hall Fee' : 'Fee Payment';
+                
+                return (
+                  <tr key={`real-${realPayment.paymentID}`} className={`border-t border-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">{realPayment.paymentID}</td>
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">{realPayment.student.rollNumber}</td>
+                    <td className="py-3 px-4 text-sm text-gray-900">{realPayment.student.user.name}</td>
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">৳{realPayment.amount.toLocaleString()}</td>
+                    <td className="py-3 px-4 text-sm text-gray-600">{realPayment.date}</td>
+                    <td className="py-3 px-4 text-sm text-gray-600">{paymentType}</td>
+                    <td className="py-3 px-4">
+                      <div className={`flex items-center space-x-1 text-sm ${
+                        status === 'PENDING' ? 'text-yellow-600' :
+                        status === 'APPROVED' ? 'text-green-600' :
+                        status === 'COMPLETED' ? 'text-green-600' :
+                        'text-red-600'
+                      }`}>
+                        {status === 'PENDING' ? <Clock className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                        <span>{status}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-600 font-mono">{realPayment.transactionID}</td>
+                    <td className="py-3 px-4 text-sm text-gray-600">{realPayment.paymentMethod}</td>
+                    <td className="py-3 px-4">
+                      {status === 'PENDING' && (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => approvePayment(realPayment.paymentID)}
+                            className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                          >
+                            <Check className="w-4 h-4" />
+                            <span>Approve</span>
+                          </button>
+                          <button
+                            onClick={() => rejectPayment(realPayment.paymentID)}
+                            className="flex items-center space-x-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                            <span>Reject</span>
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              } else {
+                // Handle mock payment (fallback)
+                const mockPayment = payment as Payment;
+                const student = getStudentInfo(mockPayment.studentId);
+                const status = getPaymentStatus(mockPayment);
+                const StatusIcon = status.icon;
 
-              if (!student) return null;
+                if (!student) return null;
 
-              return (
-                <tr key={payment.id} className={`border-t border-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900">{payment.id}</td>
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900">{student.rollNumber}</td>
-                  <td className="py-3 px-4 text-sm text-gray-900">{student.fullName}</td>
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900">৳{payment.amount.toLocaleString()}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{payment.date}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{payment.paymentType}</td>
-                  <td className="py-3 px-4">
-                    <div className={`flex items-center space-x-1 text-sm ${status.color}`}>
-                      <StatusIcon className="w-4 h-4" />
-                      <span>{status.status}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-sm text-gray-600 font-mono">{payment.transactionId}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{payment.paymentMethod}</td>
-                </tr>
-              );
+                return (
+                  <tr key={`mock-${mockPayment.id}`} className={`border-t border-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">{mockPayment.id}</td>
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">{student.rollNumber}</td>
+                    <td className="py-3 px-4 text-sm text-gray-900">{student.fullName}</td>
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">৳{mockPayment.amount.toLocaleString()}</td>
+                    <td className="py-3 px-4 text-sm text-gray-600">{mockPayment.date}</td>
+                    <td className="py-3 px-4 text-sm text-gray-600">{mockPayment.paymentType}</td>
+                    <td className="py-3 px-4">
+                      <div className={`flex items-center space-x-1 text-sm ${status.color}`}>
+                        <StatusIcon className="w-4 h-4" />
+                        <span>{status.status}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-600 font-mono">{mockPayment.transactionId}</td>
+                    <td className="py-3 px-4 text-sm text-gray-600">{mockPayment.paymentMethod}</td>
+                    <td className="py-3 px-4 text-sm text-gray-500">N/A</td>
+                  </tr>
+                );
+              }
             })}
           </tbody>
         </table>

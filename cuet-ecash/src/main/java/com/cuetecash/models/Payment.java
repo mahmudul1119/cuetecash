@@ -39,6 +39,103 @@ public class Payment {
     private HallFee hallFee;
     
     public enum PaymentStatus {
-        PENDING, COMPLETED, FAILED, REFUNDED
+        PENDING, APPROVED, COMPLETED, FAILED, REFUNDED
+    }
+
+    // Getters and Setters
+    public Long getPaymentID() {
+        return paymentID;
+    }
+
+    public void setPaymentID(Long paymentID) {
+        this.paymentID = paymentID;
+    }
+
+    public String getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(String transactionID) {
+        this.transactionID = transactionID;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getReceiptURL() {
+        return receiptURL;
+    }
+
+    public void setReceiptURL(String receiptURL) {
+        this.receiptURL = receiptURL;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public SemesterFee getSemesterFee() {
+        return semesterFee;
+    }
+
+    public void setSemesterFee(SemesterFee semesterFee) {
+        this.semesterFee = semesterFee;
+    }
+
+    public HallFee getHallFee() {
+        return hallFee;
+    }
+
+    public void setHallFee(HallFee hallFee) {
+        this.hallFee = hallFee;
     }
 }
