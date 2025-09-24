@@ -141,46 +141,18 @@ const ViewAllPayments: React.FC = () => {
   };
 
   const getFilteredPayments = () => {
-    // Use real payments if available, otherwise fall back to mock data
-    const paymentsToFilter = realPayments.length > 0 ? realPayments : mockPayments;
-    
-    if (realPayments.length > 0) {
-      // Filter real payments
-      return realPayments.filter(payment => {
-        const matchesSearch = !searchTerm || 
-          payment.student.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          payment.student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          payment.transactionID.toLowerCase().includes(searchTerm.toLowerCase());
+    return realPayments.filter(payment => {
+      const matchesSearch = !searchTerm || 
+        payment.student.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.transactionID.toLowerCase().includes(searchTerm.toLowerCase());
 
-        const matchesBatch = !filterBatch || payment.student.batch === filterBatch;
-        const matchesHall = !filterHall || payment.student.hallName === filterHall;
-        const matchesStatus = !filterStatus || payment.paymentStatus.toLowerCase().includes(filterStatus.toLowerCase());
+      const matchesBatch = !filterBatch || payment.student.batch === filterBatch;
+      const matchesHall = !filterHall || payment.student.hallName === filterHall;
+      const matchesStatus = !filterStatus || payment.paymentStatus.toLowerCase().includes(filterStatus.toLowerCase());
 
-        return matchesSearch && matchesBatch && matchesHall && matchesStatus;
-      });
-    } else {
-      // Filter mock payments (fallback)
-      return mockPayments.filter(payment => {
-        const student = getStudentInfo(payment.studentId);
-        if (!student) return false;
-
-        const matchesSearch = !searchTerm || 
-          student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          payment.transactionId.toLowerCase().includes(searchTerm.toLowerCase());
-
-        const matchesBatch = !filterBatch || student.batch === filterBatch;
-        const matchesHall = !filterHall || student.hallName === filterHall;
-
-        let matchesStatus = true;
-        if (filterStatus) {
-          const status = getPaymentStatus(payment);
-          matchesStatus = status.status.toLowerCase().includes(filterStatus.toLowerCase());
-        }
-
-        return matchesSearch && matchesBatch && matchesHall && matchesStatus;
-      });
-    }
+      return matchesSearch && matchesBatch && matchesHall && matchesStatus;
+    });
   };
 
   const filteredPayments = getFilteredPayments();

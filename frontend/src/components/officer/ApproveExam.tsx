@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle, Clock, Filter, CreditCard } from 'lucide-react';
-import { mockPayments, mockStudents, mockUsers } from '../../data/mockData';
+import { mockStudents, mockPayments} from '../../data/mockData';
 import { Payment, UserRole } from '../../types';
 
 interface ApproveExamProps {

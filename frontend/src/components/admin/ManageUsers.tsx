@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-import { Users, Plus, Eye, Edit, Trash2, User, Mail, Lock, Building, Award, AlertCircle, CheckCircle } from 'lucide-react';
-import { mockUsers, mockStudents, mockOfficers } from '../../data/mockData';
+import React, { useState, useEffect } from 'react';
+import { Users, Plus, Eye, Edit, Trash2, User, Mail, Lock, Building, Award, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import { User as UserType, UserRole } from '../../types';
+
+interface ApiUser {
+  userID: number;
+  email: string;
+  role: string;
+  fullName: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const ManageUsers: React.FC = () => {
   const [showAddOfficer, setShowAddOfficer] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [users, setUsers] = useState<ApiUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: '',
     designation: '',
@@ -15,19 +26,40 @@ const ManageUsers: React.FC = () => {
     confirmPassword: ''
   });
 
-  const getAllUsers = () => {
-    return mockUsers.map(user => {
-      let additionalInfo = {};
+  const fetchAllUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch('http://localhost:5454/api/users');
       
-      if (user.role === 'Student') {
-        const student = mockStudents.find(s => s.userId === user.id);
-        additionalInfo = { name: student?.fullName || 'Unknown Student' };
-      } else {
-        const officer = mockOfficers.find(o => o.userId === user.id);
-        additionalInfo = { name: officer?.fullName || 'Unknown Officer' };
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
       }
+      
+      const userData = await response.json();
+      setUsers(userData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load users');
+      console.error('Error fetching users:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      return { ...user, ...additionalInfo };
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+  const getAllUsers = () => {
+    return users.map(user => {
+      return { 
+        id: user.userID.toString(),
+        email: user.email, 
+        role: user.role as UserRole,
+        name: user.fullName, // Use the fullName from the API
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
     });
   };
 
@@ -73,9 +105,11 @@ const ManageUsers: React.FC = () => {
         department: formData.department
       };
 
-      // Add to mock data
-      mockUsers.push(newUser);
-      mockOfficers.push(newOfficer);
+      // TODO: Add real API call to create officer
+      console.log('Would create officer:', { newUser, newOfficer });
+      
+      // Refresh user list after adding
+      await fetchAllUsers();
 
       setMessage({ type: 'success', text: 'Officer added successfully!' });
       setFormData({
@@ -99,14 +133,14 @@ const ManageUsers: React.FC = () => {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
+      // TODO: Add real API call to delete user
+      console.log('Would delete user:', userId);
+      
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Remove from mock data (in a real app, this would be an API call)
-      const userIndex = mockUsers.findIndex(u => u.id === userId);
-      if (userIndex > -1) {
-        mockUsers.splice(userIndex, 1);
-      }
+      
+      // Refresh user list after deleting
+      await fetchAllUsers();
 
       setMessage({ type: 'success', text: 'User deleted successfully!' });
       
@@ -168,6 +202,32 @@ const ManageUsers: React.FC = () => {
               {message.text}
             </p>
           </div>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+          <span className="ml-3 text-gray-600">Loading users...</span>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+          <div className="flex items-center space-x-2">
+            <AlertCircle className="w-5 h-5 text-red-600" />
+            <p className="font-medium text-red-900">Error loading users</p>
+          </div>
+          <p className="text-red-700 mt-1">{error}</p>
+          <button
+            onClick={fetchAllUsers}
+            className="mt-3 flex items-center space-x-2 px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Retry</span>
+          </button>
         </div>
       )}
 
@@ -315,19 +375,20 @@ const ManageUsers: React.FC = () => {
       )}
 
       {/* Users Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">User ID</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Name</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Role</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Email</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allUsers.map((user, index) => (
+      {!loading && !error && (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">User ID</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Name</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Role</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Email</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allUsers.map((user: any, index: number) => (
               <tr key={user.id} className={`border-t border-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
                 <td className="py-3 px-4 text-sm font-medium text-gray-900">{user.id}</td>
                 <td className="py-3 px-4 text-sm text-gray-900">{(user as any).name}</td>
@@ -364,14 +425,15 @@ const ManageUsers: React.FC = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
 
-      {allUsers.length === 0 && (
-        <div className="text-center py-8">
-          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No users found</p>
+          {allUsers.length === 0 && (
+            <div className="text-center py-8">
+              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">No users found</p>
+            </div>
+          )}
         </div>
       )}
     </div>
