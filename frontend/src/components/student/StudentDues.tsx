@@ -341,11 +341,9 @@ const StudentDues: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-900">৳{calculateSemesterFeeAmount(fee).toLocaleString()}</p>
-                    {isOverdue(fee.deadline) && Number(fee.lateFine || 0) > 0 && (
-                      <p className="text-sm text-red-600">
-                        (Base: ৳{Number(fee.semesterFee || 0).toLocaleString()} + Late Fine: ৳{Number(fee.lateFine || 0).toLocaleString()})
-                      </p>
-                    )}
+                    <p className="text-sm text-gray-600">
+                      (Base: ৳{(fee.semesterFee || 0).toLocaleString()}{(fee.lateFine || 0) > 0 ? ` + Late Fine: ৳${(fee.lateFine || 0).toLocaleString()}` : ''})
+                    </p>
                     <div className="flex items-center space-x-2 text-sm mb-3">
                       <Calendar className="w-4 h-4" />
                       <span className={isOverdue(fee.deadline) ? 'text-red-600' : 'text-gray-600'}>
@@ -387,11 +385,9 @@ const StudentDues: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-900">৳{calculateHallFeeAmount(fee).toLocaleString()}</p>
-                    {isOverdue(fee.deadline) && Number(fee.lateFine || 0) > 0 && (
-                      <p className="text-sm text-red-600">
-                        (Base: ৳{Number(fee.hFee || 0).toLocaleString()} + Late Fine: ৳{Number(fee.lateFine || 0).toLocaleString()})
-                      </p>
-                    )}
+                    <p className="text-sm text-gray-600">
+                      (Base: ৳{(fee.hFee || 0).toLocaleString()}{(fee.lateFine || 0) > 0 ? ` + Late Fine: ৳${(fee.lateFine || 0).toLocaleString()}` : ''})
+                    </p>
                     <div className="flex items-center space-x-2 text-sm mb-3">
                       <Calendar className="w-4 h-4" />
                       <span className={isOverdue(fee.deadline) ? 'text-red-600' : 'text-gray-600'}>

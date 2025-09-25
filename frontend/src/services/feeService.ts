@@ -7,7 +7,7 @@ export interface SemesterFee {
   department: string;
   semesterFee: number;
   deadline: string;
-  lateFine: string;
+  lateFine: number;
   postedBy: string;
   isActive: boolean;
 }
@@ -18,9 +18,9 @@ export interface HallFee {
   batchNO: number;
   hallId: number;
   hallName: string;
-  hFee: string;
+  hFee: number;
   deadline: string;
-  lateFine: string;
+  lateFine: number;
   isActive: boolean;
 }
 
